@@ -1,3 +1,4 @@
+
 # Experiments with Stable Diffusion
 
 This repository extends and adds to the [original training repo](https://github.com/pesser/stable-diffusion) for Stable Diffusion. Be careful using this repo, it's by personal Stable Diffusion playground and backwards compatibility breaking changes might happen anytime. So use at your own risk. I recommend sticking to a particular git commit if you are depending on some functionality.
@@ -95,3 +96,23 @@ Then you should see this:
 [![](assets/gradio_variations.jpeg)](https://twitter.com/Buntworthy/status/1565704770056294400)
 
 Trained by [Justin Pinkney](https://www.justinpinkney.com) ([@Buntworthy](https://twitter.com/Buntworthy)) at [Lambda](https://lambdalabs.com/)
+
+# Deep Learning Examples
+
+A repository of deep learning examples.
+
+## Getting Started
+
+- Pick an example from the list below
+- Use your [local GPU machine](https://lambdalabs.com/gpu-workstations/vector), or get the GPUs you need in [Lambda Cloud](https://lambdalabs.com/service/gpu-cloud)
+- Follow the instructions in the examples README.md
+
+## Examples
+
+- [Finetune Stable Diffusion text-to-image model](stable-diffusion-finetuning/)
+- [YoloV5 - object detection example using YoloV5](yolov5/)
+- [GPTNeoX - Large Language Model Multi-Node Distributed Training](gpt-neox-training/)
+- [Experiment Tracking](experiment-tracking/)
+- [PyTorch DDP - Multi node training with PyTorch DDP, torch.distributed.launch, torchrun and mpirun](pytorch/distributed)
+- [nerfstudio on Lambda Cloud](nerfstudio/)
+
