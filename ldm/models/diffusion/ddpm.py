@@ -895,7 +895,7 @@ class LatentDiffusion(DDPM):
         return [rescale_bbox(b) for b in bboxes]
 
     def apply_model(self, x_noisy, t, cond, return_ids=False):
-
+        # print('apply model', cond.size(), x_noisy.size())
         if isinstance(cond, dict):
             # hybrid case, cond is exptected to be a dict
             pass
@@ -1258,6 +1258,7 @@ class LatentDiffusion(DDPM):
             if isinstance(xc, ListConfig):
                 xc = list(xc)
             if isinstance(xc, dict) or isinstance(xc, list):
+                # print('xc', xc)
                 c = self.get_learned_conditioning(xc)
             else:
                 if hasattr(xc, "to"):

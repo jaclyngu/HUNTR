@@ -386,6 +386,7 @@ class ImageLogger(Callback):
                 pl_module.eval()
 
             with torch.no_grad():
+                print(self.log_images_kwargs)
                 images = pl_module.log_images(batch, split=split, **self.log_images_kwargs)
 
             for k in images:

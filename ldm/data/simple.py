@@ -295,6 +295,33 @@ def hf_dataset(
     ds.set_transform(pre_process)
     return ds
 
+def hf_label_dataset(
+    name,
+    image_transforms=[],
+    image_column="image",
+    text_column="text",
+    split='train',
+    image_key='image',
+    caption_key='txt',
+    ):
+    """Make huggingface dataset with appropriate list of transforms applied
+    """
+    ds = load_dataset(name, split=split)
+    print('ds', len(ds))
+    tform = make_tranforms(image_transforms)
+    from PIL import Image
+    assert image_column in ds.column_names, f"Didn't find column {image_column} in {ds.column_names}"
+    assert text_column in ds.column_names, f"Didn't find column {text_column} in {ds.column_names}"
+    import io
+    def pre_process(examples):
+        processed = {}
+        processed[image_key] = [tform(Image.open(io.BytesIO(im))) for im in examples[image_column]]
+        processed[caption_key] = examples[text_column]
+        return processed
+
+    ds.set_transform(pre_process)
+    return ds
+
 class TextOnly(Dataset):
     def __init__(self, captions, output_size, image_key="image", caption_key="txt", n_gpus=1):
         """Returns only captions with dummy images"""
@@ -305,7 +332,7 @@ class TextOnly(Dataset):
             self.captions = self._load_caption_file(captions)
         else:
             self.captions = captions
-
+        # print('self.captions', self.captions)
         if n_gpus > 1:
             # hack to make sure that all the captions appear on each gpu
             repeated = [n_gpus*[x] for x in self.captions]

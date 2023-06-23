@@ -534,6 +534,57 @@ class LowScaleEncoder(nn.Module):
         return self.model.decode(z)
 
 
+class FrozenLabelEmbedder(AbstractEncoder):
+    """Uses the CLIP transformer encoder for text (from huggingface)"""
+    def __init__(self, version="openai/clip-vit-large-patch14", device="cuda", max_length=77):  # clip-vit-base-patch32
+        super().__init__()
+        self.device = device
+
+    def forward(self, text):
+        label_values = []
+        from ast import literal_eval
+        for i in text:
+            if not i:
+                label_values.append([0]*768)
+            else:
+                label_values.append(literal_eval(i)+[0]*761)
+        return torch.Tensor(label_values).unsqueeze(1).to(self.device)
+
+    def encode(self, text):
+        return self(text)
+
+class LabelEmbedder(AbstractEncoder):
+    """Uses the CLIP transformer encoder for text (from huggingface)"""
+    def __init__(self, version="openai/clip-vit-large-patch14", device="cuda", max_length=77):  # clip-vit-base-patch32
+        super().__init__()
+        self.device = device
+        self.fc = nn.Sequential(
+            nn.Linear(6, 64),
+            nn.ReLU(),
+            nn.Linear(64, 128),
+            nn.ReLU(),
+            nn.Linear(128, 256),
+            nn.ReLU(),
+            nn.Linear(256, 512),
+            nn.ReLU(),
+            nn.Linear(512, 768),
+        ).to(self.device)
+
+    def forward(self, text):
+        label_values = []
+        from ast import literal_eval
+        for i in text:
+            if not i:
+                label_values.append([0]*6)
+            else:
+                label_values.append(literal_eval(i))
+        z = torch.Tensor(label_values).unsqueeze(1).to(self.device)
+        return self.fc(z)
+
+    def encode(self, text):
+        return self(text)
+
+
 if __name__ == "__main__":
     from ldm.util import count_params
     sentences = ["a hedgehog drinking a whiskey", "der mond ist aufgegangen", "Ein Satz mit vielen Sonderzeichen: äöü ß ?! : 'xx-y/@s'"]
